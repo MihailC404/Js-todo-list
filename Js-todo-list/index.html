@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todos</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+    <script defer src="https://jsdelivr.net"></script>
+    <script type="module" src="./src/services/supabase.js"></script>
+    <script type="module" src="./src/script.js"></script>
+</head>
+<body>
+    <section class="todoapp">
+        <header class="header">
+            <h1>todos</h1>
+            <input class="new-todo" placeholder="What needs to be done?" autofocus>
+        </header>
+        <section class="main">
+            <ul class="todo-list">
+            </ul>
+        </section>
+        <footer class="footer">
+            <span class="todo-count"><strong>0</strong> items left</span>
+        </footer>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
