@@ -1,0 +1,194 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #f5f5f5;
+    color: #4d4d4d;
+    /* Тонкий шрифт Helvetica Neue, как в оригинале */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+.todoapp {
+    background: #fff;
+    margin: 130px auto 40px auto;
+    position: relative;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+    max-width: 550px;
+    width: 100%;
+}
+
+
+.todoapp h1 {
+    position: absolute;
+    top: -155px;
+    width: 100%;
+    font-size: 100px;
+    font-weight: 100;
+    text-align: center;
+    color: rgba(175, 47, 47, 0.15);
+    margin: 0;
+    padding-top: 20px;
+}
+
+.new-todo {
+    width: 100%;
+    font-size: 24px;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: 1.4em;
+    box-sizing: border-box;
+    padding: 16px 16px 16px 60px;
+    border: none;
+    background: rgba(0, 0, 0, 0.003);
+    box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+}
+
+.new-todo:focus {
+    outline: none;
+}
+
+
+.todo-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.todo-list li {
+    position: relative;
+    font-size: 24px;
+    border-bottom: 1px solid #ededed;
+    display: flex;
+    align-items: center;
+    min-height: 58px;
+}
+
+.todo-item-text {
+    width: 100%;
+    padding: 15px 15px 15px 60px;
+    line-height: 1.2;
+    transition: color 0.4s;
+    word-break: break-all;
+    box-sizing: border-box;
+}
+
+.todo-list li.editing,
+
+.todo-list li:focus-within {
+    box-sizing: border-box;
+    outline: 2px solid #2ecc71; 
+    outline-offset: 12px;
+}
+
+.toggle-checkbox {
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 10px;
+    margin: auto 0;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+
+.toggle-checkbox:after {
+    content: url('data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="%23ededed" stroke-width="3"/></svg>');
+}
+
+.toggle-checkbox:checked:after {
+    content: url('data:image/svg+xml;utf8,<svg xmlns="http://w3.org" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="%23bddad5" stroke-width="3"/><path fill="%235dc2af" d="M7.2 25L15.2 33 32.8 10l-2.4-1.6L15.2 28.2l-5.6-5.6z"/></svg>');
+}
+
+.todo-list li.completed .todo-item-text {
+    color: #d9d9d9;
+    text-decoration: line-through;
+}
+
+.destroy {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    bottom: 0;
+    width: 40px;
+    height: 40px;
+    margin: auto 0;
+    font-size: 30px;
+    color: #cc9a9a;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease-out;
+}
+
+.todo-list li:hover .destroy {
+    display: block;
+}
+
+.destroy:hover {
+    color: #af5b5b;
+}
+.footer {
+    color: #777;
+    padding: 10px 15px;
+    height: 20px;
+    text-align: center;
+    border-top: 1px solid #e6e6e6;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.todo-count {
+    float: left;
+    text-align: left;
+}
+
+.filters {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 10px;
+}
+
+.filters li a {
+    color: inherit;
+    margin: 3px;
+    padding: 3px 7px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+}
+
+.filters li a:hover {
+    border-color: rgba(175, 47, 47, 0.1);
+}
+
+.filters li a.selected {
+    border-color: rgba(175, 47, 47, 0.2);
+}
+
+.footer:before {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    overflow: hidden;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 
+                0 8px 0 -3px #f6f6f6, 
+                0 9px 1px -3px rgba(0, 0, 0, 0.2), 
+                0 16px 0 -6px #f6f6f6, 
+                0 17px 2px -6px rgba(0, 0, 0, 0.2);
+    z-index: -1;
+}
