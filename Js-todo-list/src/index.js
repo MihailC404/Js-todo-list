@@ -3,14 +3,17 @@ import { getTodosFromDB, addTodoToDB, deleteTodoFromDB, updateTodoStatusInDB } f
 const todoInput = document.querySelector('.new-todo');
 const todoList = document.querySelector('.todo-list');
 const todoCount = document.querySelector('.todo-count strong');
+const filterAll = document.querySelector('#filter-all');
+const filterActive = document.querySelector('#filter-active');
+const filterCompleted = document.querySelector('#filter-completed');
+const clearCompletedBtn = document.querySelector('.clear-completed');
 
-// 1. Загрузка всех задач из базы данных при старте приложения
+//  Загрузка всех задач c БД
 async function init() {
     try {
         const todos = await getTodosFromDB();
         todoList.innerHTML = ''; // Очищаем список перед рендером
         
-        // Перебираем массив задач и отрисовываем каждую на экране
         todos.forEach(todo => renderTodo(todo));
         updateCount();
     } catch (err) {
@@ -19,16 +22,12 @@ async function init() {
     }
 }
 
-// 2. Отслеживание нажатия Enter для создания новой задачи
 todoInput.addEventListener('keydown', async (e) => {
     const text = todoInput.value.trim();
     
     if (e.key === 'Enter' && text !== '') {
         try {
-            // Отправляем задачу в Supabase
             const responseData = await addTodoToDB(text);
-            
-            // Рендерим полученный объект задачи напрямую
             if (responseData) {
                 renderTodo(responseData);
                 todoInput.value = ''; 
@@ -39,10 +38,8 @@ todoInput.addEventListener('keydown', async (e) => {
         }
     }
 });
-
-// 3. Отображение одной задачи в интерфейсе (DOM)
 function renderTodo(todo) {
-    const li = document.createElement('li');
+ const li = document.createElement('li');
     li.setAttribute('data-id', todo.id);
     
     if (todo.is_completed) {
@@ -54,11 +51,7 @@ function renderTodo(todo) {
         <div class="todo-item-text"></div>
         <button class="destroy">×</button>
     `;
-
-    // НАЖНО: Безопасно добавляем текст задачи (строка была закомментирована)
     li.querySelector('.todo-item-text').textContent = todo.title;
-
-    // Переключение статуса выполнения (Обновление в БД)
     const checkbox = li.querySelector('.toggle-checkbox');
     checkbox.addEventListener('change', async () => {
         try {
@@ -66,13 +59,12 @@ function renderTodo(todo) {
             li.classList.toggle('completed', checkbox.checked);
             updateCount();
         } catch (err) {
-            // Если база данных вернула ошибку, возвращаем галочку на место
             checkbox.checked = !checkbox.checked;
             alert('Не удалось обновить статус: ' + err.message);
         }
     });
 
-    // Удаление задачи из БД и интерфейса
+    // Удаление задач
     const destroyBtn = li.querySelector('.destroy');
     destroyBtn.addEventListener('click', async () => {
         try {
@@ -87,11 +79,73 @@ function renderTodo(todo) {
     todoList.appendChild(li);
 }
 
-// 4. Счетчик активных задач 
-function updateCount() {
-    const activeTodos = todoList.querySelectorAll('li:not(.completed)').length;
-    todoCount.textContent = activeTodos;
+function resetFilterLinks() {
+    document.querySelectorAll('.filters a').forEach(a => a.classList.remove('selected'));
 }
 
-// Запускаем приложение
+
+
+
+// кнопка Active 
+if (filterActive) {
+    filterActive.addEventListener('click', (e) => {
+        e.preventDefault();
+        resetFilterLinks();
+        filterActive.classList.add('selected');
+        todoList.classList.add('limit-3'); 
+        
+        todoList.querySelectorAll('li').forEach(li => {
+            if (li.classList.contains('completed')) {
+                li.style.display = 'none';
+            } else {
+                li.style.display = 'flex';
+            }
+        });
+    });
+}
+
+//кнопка All 
+if (filterAll) {
+    filterAll.addEventListener('click', (e) => {
+        e.preventDefault();
+        resetFilterLinks();
+        filterAll.classList.add('selected');
+        todoList.classList.remove('limit-3'); 
+        todoList.querySelectorAll('li').forEach(li => li.style.display = 'flex');
+    });
+}
+
+if (filterCompleted) {
+    filterCompleted.addEventListener('click', (e) => {
+        e.preventDefault();
+        resetFilterLinks();
+        filterCompleted.classList.add('selected');
+        todoList.classList.add('limit-3');
+        
+        todoList.querySelectorAll('li').forEach(li => {
+            if (!li.classList.contains('completed')) {
+                li.style.display = 'none';
+            } else {
+                li.style.display = 'flex';
+            }
+         });
+    });
+}
+
+// счётчик задач
+function updateCount() {
+    const activeTodos = todoList.querySelectorAll('li:not(.completed)').length;
+    todoCount.innerHTML = `<strong>${activeTodos}</strong> items left`;
+    if (!clearCompletedBtn) return;
+    
+    const completedTodos = todoList.querySelectorAll('li.completed').length;
+    
+    if (completedTodos > 0) {
+        clearCompletedBtn.style.display = 'block';
+        clearCompletedBtn.textContent = `Clear completed [${completedTodos}]`;
+    } else {
+        clearCompletedBtn.style.display = 'none';
+    }
+}
+
 init();
