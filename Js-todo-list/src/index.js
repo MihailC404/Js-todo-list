@@ -8,13 +8,18 @@ const filterActive = document.querySelector('#filter-active');
 const filterCompleted = document.querySelector('#filter-completed');
 const clearCompletedBtn = document.querySelector('.clear-completed');
 
-//  Загрузка всех задач c БД
+//Загрузка  задач c БД
 async function init() {
     try {
         const todos = await getTodosFromDB();
-        todoList.innerHTML = ''; // Очищаем список перед рендером
+        todoList.innerHTML = ''; 
         
         todos.forEach(todo => renderTodo(todo));
+        
+        if (todoList) {
+            todoList.classList.add('limit-3'); 
+        }
+        
         updateCount();
     } catch (err) {
         console.error('Не удалось загрузить задачи:', err);
@@ -38,28 +43,44 @@ todoInput.addEventListener('keydown', async (e) => {
         }
     }
 });
+
 function renderTodo(todo) {
- const li = document.createElement('li');
+    const li = document.createElement('li');
     li.setAttribute('data-id', todo.id);
     
     if (todo.is_completed) {
         li.classList.add('completed');
     }
     
+    // Создаем структуру с чистыми div вместо картинок img
     li.innerHTML = `
-        <input class="toggle-checkbox" type="checkbox" ${todo.is_completed ? 'checked' : ''}>
-        <div class="todo-item-text"></div>
+        <div class="custom-checkbox" style="position: absolute; left: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: ${todo.is_completed ? '1px solid #2ecc71' : '1.5px solid #e6e6e6'}; border-radius: 50%; box-sizing: border-box; z-index: 5; transition: all 0.2s ease;">
+            <div class="custom-checkmark" style="display: ${todo.is_completed ? 'block' : 'none'}; width: 6px; height: 12px; border: solid #2ecc71; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); margin-bottom: 2px;"></div>
+        </div>
+        <div class="todo-item-text" style="padding-left: 65px;"></div>
         <button class="destroy">×</button>
     `;
+    
     li.querySelector('.todo-item-text').textContent = todo.title;
-    const checkbox = li.querySelector('.toggle-checkbox');
-    checkbox.addEventListener('change', async () => {
+    const checkbox = li.querySelector('.custom-checkbox');
+    checkbox.addEventListener('click', async () => {
+        const currentStatus = li.classList.contains('completed');
+        const nextStatus = !currentStatus;
+        
         try {
-            await updateTodoStatusInDB(todo.id, checkbox.checked);
-            li.classList.toggle('completed', checkbox.checked);
+            await updateTodoStatusInDB(todo.id, nextStatus);
+            li.classList.toggle('completed', nextStatus);
+            const checkmark = checkbox.querySelector('.custom-checkmark');
+            if (nextStatus) {
+                checkbox.style.border = '1px solid #2ecc71';
+                checkmark.style.display = 'block';
+            } else {
+                checkbox.style.border = '1.5px solid #e6e6e6';
+                checkmark.style.display = 'none';
+            }
+            
             updateCount();
         } catch (err) {
-            checkbox.checked = !checkbox.checked;
             alert('Не удалось обновить статус: ' + err.message);
         }
     });
@@ -82,9 +103,6 @@ function renderTodo(todo) {
 function resetFilterLinks() {
     document.querySelectorAll('.filters a').forEach(a => a.classList.remove('selected'));
 }
-
-
-
 
 // кнопка Active 
 if (filterActive) {
@@ -134,8 +152,11 @@ if (filterCompleted) {
 
 // счётчик задач
 function updateCount() {
+    if (!todoCount) return;
     const activeTodos = todoList.querySelectorAll('li:not(.completed)').length;
-    todoCount.innerHTML = `<strong>${activeTodos}</strong> items left`;
+    todoCount.innerHTML = `Осталось задач: <strong>${activeTodos}</strong>`;
+    
+    const clearCompletedBtn = document.querySelector('.clear-completed');
     if (!clearCompletedBtn) return;
     
     const completedTodos = todoList.querySelectorAll('li.completed').length;
@@ -147,5 +168,3 @@ function updateCount() {
         clearCompletedBtn.style.display = 'none';
     }
 }
-
-init();
