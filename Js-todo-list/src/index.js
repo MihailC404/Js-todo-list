@@ -33,8 +33,20 @@ todoInput.addEventListener('keydown', async (e) => {
     if (e.key === 'Enter' && text !== '') {
         try {
             const responseData = await addTodoToDB(text);
+            
             if (responseData) {
-                renderTodo(responseData);
+                if (filterAll) {
+                    resetFilterLinks();
+                    filterAll.classList.add('selected');
+                    todoList.classList.remove('limit-3'); 
+                    todoList.querySelectorAll('li').forEach(li => li.style.display = 'flex');
+                }
+                if (Array.isArray(responseData)) {
+                    renderTodo(responseData[0]);
+                } else {
+                    renderTodo(responseData);
+                }
+
                 todoInput.value = ''; 
                 updateCount();
             }
@@ -52,9 +64,8 @@ function renderTodo(todo) {
         li.classList.add('completed');
     }
     
-    // Создаем структуру с чистыми div вместо картинок img
     li.innerHTML = `
-        <div class="custom-checkbox" style="position: absolute; left: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: ${todo.is_completed ? '1px solid #2ecc71' : '1.5px solid #e6e6e6'}; border-radius: 50%; box-sizing: border-box; z-index: 5; transition: all 0.2s ease;">
+        <div class="custom-checkbox" style="position: absolute; left: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: ${todo.is_completed ? '1px solid #2ecc71' : '1.5px solid #e6e6e6'}; border-radius: 50%; box-sizing: border-box; z-index: 5; transition: all 0.2s ease;">
             <div class="custom-checkmark" style="display: ${todo.is_completed ? 'block' : 'none'}; width: 6px; height: 12px; border: solid #2ecc71; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); margin-bottom: 2px;"></div>
         </div>
         <div class="todo-item-text" style="padding-left: 65px;"></div>
@@ -168,3 +179,4 @@ function updateCount() {
         clearCompletedBtn.style.display = 'none';
     }
 }
+init();
