@@ -69,11 +69,13 @@ html, body {
 
 .todo-item-text {
     width: 100%;
-    padding: 15px 15px 15px 60px;
+    padding: 15px 50px 15px 65px; 
     line-height: 1.2;
     transition: color 0.4s;
-    word-break: break-all;
-    box-sizing: border-box;
+    box-sizing: border-box; 
+    word-break: break-all;       
+    word-wrap: break-word;       
+    overflow-wrap: break-word;   
 }
 
 .todo-list li.editing,
@@ -128,7 +130,6 @@ html, body {
     background: none;
     border: none;
     cursor: pointer;
-    transition: color 0.2s ease-out;
 }
 
 .todo-list li:hover .destroy {
